@@ -13,5 +13,5 @@
 *.user
 *.suo
 
-Intermediates/
+Dependencies/
 ipch/
