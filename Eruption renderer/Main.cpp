@@ -53,7 +53,7 @@ int main(int argc, char* argv[])
 	EruptionMath::mat4 projectionMatirx = projectionMatirx.ProjectionMatirx(0.1f, 1000.0f, 90.0f, screenWidth, screenHeight);
 	Mesh cube;
 	//red pixel
-	EruptionMath::Color color(255,0, 0, 255);
+	EruptionMath::Color color(255 ,255, 255, 255);
     int ourColor = color.toRGB();
 
 	//

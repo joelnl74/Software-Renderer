@@ -12,5 +12,6 @@ public:
 	std::vector<EruptionMath::Triangle> verticies;
 private:
 	float fTheta;
+	EruptionMath::vec3 position;
 };
 

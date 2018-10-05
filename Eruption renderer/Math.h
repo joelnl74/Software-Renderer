@@ -44,12 +44,12 @@ namespace EruptionMath
 			z /= magnitude;
 		}
 		//calculate and return dot product
-		float dotVector(const vec3 &vec) const
+		float DotProduct(const vec3 &vec, const vec3 &vec1) const
 		{
-			return x * vec.x + y * vec.y + z * vec.z;
+			return (vec.x * vec1.x) + (vec.y * vec1.y) + (vec.z * vec1.z);
 		}
 		//calculate and return cross product
-		vec3 crossVector(const vec3 &vec) const
+		vec3 CrossProduct(const vec3 &vec) const
 		{
 			return vec3(y * vec.z - z * vec.y,
 				z * vec.x - x * vec.z,
