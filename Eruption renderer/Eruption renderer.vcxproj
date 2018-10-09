@@ -125,14 +125,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ObjParser.h" />
+    <ClInclude Include="Shader.h" />
+    <ClInclude Include="BasicShader.h" />
     <ClInclude Include="Math.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Rasterizer.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BasicShader.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="ObjParser.cpp" />
     <ClCompile Include="Rasterizer.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>

@@ -36,12 +36,14 @@ namespace EruptionMath
 			return vec3(x * num, y * num, z * num);
 		}
 		//normalize vector
-		void normalize()
+		vec3 normalize()
 		{
 			float magnitude = sqrtf(x * x + y * y + z * z);
 			x /= magnitude;
 			y /= magnitude;
 			z /= magnitude;
+
+			return vec3(x, y, z);
 		}
 		//calculate and return dot product
 		float DotProduct(const vec3 &vec, const vec3 &vec1) const
@@ -86,44 +88,45 @@ namespace EruptionMath
 			y /= magnitude;
 		}
 	};
-	struct  Triangle
-	{
-		vec3 p[3];
-		Triangle(vec3 vt1, vec3 vt2, vec3 vt3) 
-		{
-			p[0] = vt1;
-			p[1] = vt2;
-			p[2] = vt3;
-		}
 
-	};
 	struct Color
 	{
-		float R, G, B, A;
+		float R, G, B;
 
-		Color(float r = 255, float g = 255, float b = 255, float a = 255) { R = r; G = g, B = b, A = a; }
+		Color(float r = 255, float g = 255, float b = 255) { R = r, G = g, B = b; };
 
 		Color operator + (const Color &c) const 
 		{
-			return (R + c.R, G + c.G, B + c.B, A + c.A);
+			return (R + c.R, G + c.G, B + c.B);
 		}
 		Color operator - (const Color &c) const 
 		{
-			return (R - c.R, G - c.G, B - c.B, A - c.A);
+			return (R - c.R, G - c.G, B - c.B);
 		}
 		Color operator * (float f) const 
 		{
-			return (R * f, G * f, B * f, A * f);
+			return (R * f, G * f, B * f);
 		}
 		int toRGB()
 		{
 			unsigned int r = R;
 			unsigned int g = G;
 			unsigned int b = B;
-			unsigned int a = A;
 
-			return  a << 24 | r << 16 | g << 8 | b << 0;  // 16742927
+			return  r << 24 | g << 16 | b << 8;  // 16742927
 		}
+	};
+	struct  Triangle
+	{
+		vec3 p[3];
+		Color color;
+			Triangle(vec3 vt1, vec3 vt2, vec3 vt3)
+		{
+			p[0] = vt1;
+			p[1] = vt2;
+			p[2] = vt3;
+		}
+
 	};
 	struct mat4
 	{

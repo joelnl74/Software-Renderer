@@ -133,35 +133,32 @@ void Rasterizer::DrawLine(EruptionMath::vec3 vt1, EruptionMath::vec3 vt2, Uint32
 }
 void Rasterizer::DrawTriangle(EruptionMath::Triangle tri, unsigned int color)
 {
-    EruptionMath::Color color2(255, 0, 0, 255);
+    EruptionMath::Color color2(0, 0, 125);
 	DrawLine(tri.p[0], tri.p[1], color2.toRGB());
 	DrawLine(tri.p[1], tri.p[2], color2.toRGB());
 	DrawLine(tri.p[2], tri.p[0], color2.toRGB());
 
-	// Compute triangle bounding box. 
-	int minX = std::min(std::min(tri.p[0].x, tri.p[1].x), tri.p[2].x);
-	int maxX = std::max(std::max(tri.p[0].x, tri.p[1].x), tri.p[2].x);
-	int minY = std::min(std::min(tri.p[0].y, tri.p[1].y), tri.p[2].y);
-	int maxY = std::max(std::max(tri.p[0].y, tri.p[1].y), tri.p[2].y);
+		// Compute triangle bounding box. 
+		int minX = std::min(std::min(tri.p[0].x, tri.p[1].x), tri.p[2].x);
+		int maxX = std::max(std::max(tri.p[0].x, tri.p[1].x), tri.p[2].x);
+		int minY = std::min(std::min(tri.p[0].y, tri.p[1].y), tri.p[2].y);
+		int maxY = std::max(std::max(tri.p[0].y, tri.p[1].y), tri.p[2].y);
 
-	// Compute edge equations. 
-	EdgeEquation e0(tri.p[0], tri.p[1]);
-	EdgeEquation e1(tri.p[1], tri.p[2]);
-	EdgeEquation e2(tri.p[2], tri.p[0]);
+		// Compute edge equations. 
+		EdgeEquation e0(tri.p[0], tri.p[1]);
+		EdgeEquation e1(tri.p[1], tri.p[2]);
+		EdgeEquation e2(tri.p[2], tri.p[0]);
 
-	float area = 0.5 * (e0.c + e1.c + e2.c);
+		float area = 0.5 * (e0.c + e1.c + e2.c);
 
-	// Check if triangle is backfacing. 
-	if (area < 0)
-		return;
 
-	// Add 0.5 to sample at pixel centers. 
-	for (float x = minX + 0.5f, xm = maxX + 0.5f; x <= xm; x += 1.0f)
-		for (float y = minY + 0.5f, ym = maxY + 0.5f; y <= ym; y += 1.0f)
-		{
-			if (e0.test(x, y) && e1.test(x, y) && e2.test(x, y))
+		// Add 0.5 to sample at pixel centers. 
+		for (float x = minX + 0.5f, xm = maxX + 0.5f; x <= xm; x += 1.0f)
+			for (float y = minY + 0.5f, ym = maxY + 0.5f; y <= ym; y += 1.0f)
 			{
-					PutPixel( x, y, color);
+				if (e0.test(x, y) && e1.test(x, y) && e2.test(x, y))
+				{
+					PutPixel(x, y, color);
+				}
 			}
-		}
 }
