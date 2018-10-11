@@ -107,6 +107,7 @@ void Rasterizer::DrawLine(EruptionMath::vec3 vt1, EruptionMath::vec3 vt2, Uint32
 		for (float x = xmin; x <= xmax; x += 1.0f) {
 			float y = vt1.y + ((x - vt1.x) * slope);
 			PutPixel(x, y, color);
+			//yCoords.push_back(EruptionMath::vec3(x, y, 0));
 		}
 	}
 	else {
@@ -128,6 +129,7 @@ void Rasterizer::DrawLine(EruptionMath::vec3 vt1, EruptionMath::vec3 vt2, Uint32
 		for (float y = ymin; y <= ymax; y += 1.0f) {
 			float x = vt1.x + ((y - vt1.y) * slope);
 			PutPixel(x, y, color);
+			//yCoords.push_back(EruptionMath::vec3(x, y, 0));
 		}
 	}
 }

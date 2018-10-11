@@ -1,7 +1,7 @@
 #pragma once
 #include "SDL.h"
 #include "EdgeEquation.h"
-
+#include <vector>
 class Rasterizer
 {
 public:
@@ -13,6 +13,6 @@ public:
 	void DrawTriangle(EruptionMath::Triangle, unsigned int color);
 private:
 	SDL_Surface *surface;
-
+	std::vector<EruptionMath::vec3> yCoords;
 };
 
