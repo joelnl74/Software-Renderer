@@ -48,9 +48,10 @@ int main(int argc, char* argv[])
 	SDL_Surface *screen = SDL_GetWindowSurface(window->window);
 	Rasterizer *rasterizer = new Rasterizer(screen);
 
+	rasterizer->mode = RasterizerMode::Line_And_Fill;
 	//Create a projection matrix 
 	EruptionMath::mat4 projectionMatirx = projectionMatirx.ProjectionMatirx(0.1f, 1000.0f, 90.0f, 800, 600);
-	Mesh cube(EruptionMath::vec3(400.0f, 300.0f, 0.0f), "Resources/OBJ/teapot.obj" );
+	Mesh cube(EruptionMath::vec3(400.0f, 300.0f, 0.0f), "Resources/OBJ/Star.obj" );
 	//Mesh cube1(EruptionMath::vec3(200.0f, 150.0f, 0.0f),"Resources/OBJ/Cube.obj"  );
 
 	BasicShader *basic = new BasicShader(projectionMatirx);
@@ -63,16 +64,17 @@ int main(int argc, char* argv[])
 	{
 		old_time = current_time;
 		current_time = SDL_GetTicks();
-		ftime = (current_time - old_time) / 1000.0f;
 
+		ftime = (current_time - old_time) / 1000.0f;
+		printf("%f", ftime);
 		SDL_Event event;
 		while (SDL_PollEvent(&event))
 			HandleEvent(event);
 
 			SDL_FillRect(screen, 0, 0);
 			//render here
-			cube.Draw(*rasterizer, color, projectionMatirx,ftime, basic);
-			//cube1.Draw(*rasterizer, color, projectionMatirx, ftime, basic);
+		     cube.Draw(*rasterizer, color, projectionMatirx,ftime, basic);
+			 //cube1.Draw(*rasterizer, color, projectionMatirx, ftime, basic);
 
 			SDL_UpdateWindowSurface(window->window);
 	}

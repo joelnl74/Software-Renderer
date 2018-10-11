@@ -1,5 +1,6 @@
 ﻿#include "Rasterizer.h"
 #include <algorithm>
+#include <thread>
 Rasterizer::Rasterizer(SDL_Surface *_surface)
 {
 	surface = _surface;
@@ -107,7 +108,6 @@ void Rasterizer::DrawLine(EruptionMath::vec3 vt1, EruptionMath::vec3 vt2, Uint32
 		for (float x = xmin; x <= xmax; x += 1.0f) {
 			float y = vt1.y + ((x - vt1.x) * slope);
 			PutPixel(x, y, color);
-			//yCoords.push_back(EruptionMath::vec3(x, y, 0));
 		}
 	}
 	else {
@@ -129,17 +129,27 @@ void Rasterizer::DrawLine(EruptionMath::vec3 vt1, EruptionMath::vec3 vt2, Uint32
 		for (float y = ymin; y <= ymax; y += 1.0f) {
 			float x = vt1.x + ((y - vt1.y) * slope);
 			PutPixel(x, y, color);
-			//yCoords.push_back(EruptionMath::vec3(x, y, 0));
 		}
 	}
 }
 void Rasterizer::DrawTriangle(EruptionMath::Triangle tri, unsigned int color)
 {
-    EruptionMath::Color color2(0, 0, 125);
-	DrawLine(tri.p[0], tri.p[1], color2.toRGB());
-	DrawLine(tri.p[1], tri.p[2], color2.toRGB());
-	DrawLine(tri.p[2], tri.p[0], color2.toRGB());
+	EruptionMath::Color color2(0, 0, 125);
 
+	if (mode == RasterizerMode::Line || mode == RasterizerMode::Line_And_Fill)
+	{
+		//std::thread thread1(std::bind(&Rasterizer::DrawLine, this, std::ref(tri.p[0]), std::ref(tri.p[1]), color2.toRGB()));
+		//std::thread thread2(std::bind(&Rasterizer::DrawLine, this, std::ref(tri.p[1]), std::ref(tri.p[2]), color2.toRGB()));
+		//std::thread thread3(std::bind(&Rasterizer::DrawLine, this, std::ref(tri.p[2]), std::ref(tri.p[1]), color2.toRGB()));
+		
+		DrawLine(tri.p[0], tri.p[1], color2.toRGB());
+		DrawLine(tri.p[1], tri.p[2], color2.toRGB());
+		DrawLine(tri.p[2], tri.p[0], color2.toRGB());
+	}
+
+	if (mode == RasterizerMode::Fill || mode == RasterizerMode::Line_And_Fill)
+	{
+		//Half space triangle
 		// Compute triangle bounding box. 
 		int minX = std::min(std::min(tri.p[0].x, tri.p[1].x), tri.p[2].x);
 		int maxX = std::max(std::max(tri.p[0].x, tri.p[1].x), tri.p[2].x);
@@ -153,7 +163,6 @@ void Rasterizer::DrawTriangle(EruptionMath::Triangle tri, unsigned int color)
 
 		float area = 0.5 * (e0.c + e1.c + e2.c);
 
-
 		// Add 0.5 to sample at pixel centers. 
 		for (float x = minX + 0.5f, xm = maxX + 0.5f; x <= xm; x += 1.0f)
 			for (float y = minY + 0.5f, ym = maxY + 0.5f; y <= ym; y += 1.0f)
@@ -163,4 +172,5 @@ void Rasterizer::DrawTriangle(EruptionMath::Triangle tri, unsigned int color)
 					PutPixel(x, y, color);
 				}
 			}
+	}
 }
