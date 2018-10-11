@@ -25,6 +25,7 @@ EruptionMath::vec3 BasicShader::VertexShader(EruptionMath::vec3 vec3)
 	matWorld = matWorld.Matrix_MultiplyMatrix(matWorld, matTans);
 
 	transformed = matWorld.MulitiplyMatrixVector(vec3, matWorld);
+
 	projected = matWorld.MulitiplyMatrixVector(transformed, projectionMatirx);
 	
 	projected = projected / projected.w;
