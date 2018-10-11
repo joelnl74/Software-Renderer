@@ -125,6 +125,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="EdgeEquation.h" />
     <ClInclude Include="ObjParser.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="BasicShader.h" />

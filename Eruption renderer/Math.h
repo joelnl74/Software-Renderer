@@ -8,8 +8,9 @@ namespace EruptionMath
 		float x;
 		float y;
 		float z;
+		float w;
 
-		vec3(float x = 0.0f, float y = 0.0f, float z = 0.0f) : x(x), y(y), z(z) {}
+		vec3(float x = 0.0f, float y = 0.0f, float z = 0.0f, float w = 1.0f) : x(x), y(y), z(z), w(w) {}
 		//add
 		vec3 operator +(const vec3 &rhs)
 		{
@@ -21,9 +22,9 @@ namespace EruptionMath
 			return vec3(x - rhs.x, y - rhs.y, z - rhs.z);
 		}
 		//?
-		vec3 operator /(const vec3 &rhs)
+		vec3 operator / (float k)
 		{
-			return vec3(x / rhs.x, y / rhs.y, z / rhs.z);
+			return vec3(x / k,y /k, z / k);
 		}
 		//get Magnitude of the vector
 		float GetMagnitude()
@@ -95,15 +96,15 @@ namespace EruptionMath
 
 		Color(float r = 255, float g = 255, float b = 255) { R = r, G = g, B = b; };
 
-		Color operator + (const Color &c) const 
+		Color operator + (const Color &c) const
 		{
 			return (R + c.R, G + c.G, B + c.B);
 		}
-		Color operator - (const Color &c) const 
+		Color operator - (const Color &c) const
 		{
 			return (R - c.R, G - c.G, B - c.B);
 		}
-		Color operator * (float f) const 
+		Color operator * (float f) const
 		{
 			return (R * f, G * f, B * f);
 		}
@@ -113,14 +114,14 @@ namespace EruptionMath
 			unsigned int g = G;
 			unsigned int b = B;
 
-			return  r << 24 | g << 16 | b << 8;  // 16742927
+			return ((r & 0xff) << 16) + ((g & 0xff) << 8) + (b & 0xff);;  // 16742927
 		}
 	};
 	struct  Triangle
 	{
 		vec3 p[3];
 		Color color;
-			Triangle(vec3 vt1, vec3 vt2, vec3 vt3)
+		Triangle(vec3 vt1, vec3 vt2, vec3 vt3)
 		{
 			p[0] = vt1;
 			p[1] = vt2;
@@ -131,6 +132,16 @@ namespace EruptionMath
 	struct mat4
 	{
 		float m4[4][4] = { 0 };
+
+		mat4 Matrix_MultiplyMatrix(mat4 &m1, mat4 &m2)
+		{
+			mat4 matrix;
+			for (int c = 0; c < 4; c++)
+				for (int r = 0; r < 4; r++)
+					matrix.m4[r][c] = m1.m4[r][0] * m2.m4[0][c] + m1.m4[r][1] * m2.m4[1][c] + m1.m4[r][2] * m2.m4[2][c] + m1.m4[r][3] * m2.m4[3][c];
+			return matrix;
+		}
+
 		//Create a projection matrix
 		mat4 ProjectionMatirx(float fNearr, float fFarr, float fFovv, float width, float height)
 		{
@@ -151,72 +162,67 @@ namespace EruptionMath
 
 			return projection;
 		};
-		mat4 RotateZ(float time)
+		mat4 RotateZ(float fAngleRad)
 		{
 			mat4 matRotZ;
 			// Rotation Z
-			matRotZ.m4[0][0] = cosf(time);
-			matRotZ.m4[0][1] = sinf(time);
-			matRotZ.m4[1][0] = -sinf(time);
-			matRotZ.m4[1][1] = cosf(time);
-			matRotZ.m4[2][2] = 1;
-			matRotZ.m4[3][3] = 1;
+			matRotZ.m4[0][0] = cosf(fAngleRad);
+			matRotZ.m4[0][1] = sinf(fAngleRad);
+			matRotZ.m4[1][0] = -sinf(fAngleRad);
+			matRotZ.m4[1][1] = cosf(fAngleRad);
+			matRotZ.m4[2][2] = 1.0f;
+			matRotZ.m4[3][3] = 1.0f;
 			return matRotZ;
 		}
-		mat4 RotateX(float time)
+		mat4 RotateX(float fAngleRad)
 		{
 			mat4 matRotX;
 			// Rotation X
-			matRotX.m4[0][0] = 1;
-			matRotX.m4[1][1] = cosf(time * 0.5f);
-			matRotX.m4[1][2] = sinf(time * 0.5f);
-			matRotX.m4[2][1] = -sinf(time * 0.5f);
-			matRotX.m4[2][2] = cosf(time * 0.5f);
-			matRotX.m4[3][3] = 1;
+			matRotX.m4[0][0] = 1.0f;
+			matRotX.m4[1][1] = cosf(fAngleRad);
+			matRotX.m4[1][2] = sinf(fAngleRad);
+			matRotX.m4[2][1] = -sinf(fAngleRad);
+			matRotX.m4[2][2] = cosf(fAngleRad);
+			matRotX.m4[3][3] = 1.0f;
 
 			return matRotX;
+		};
+		mat4 Identity()
+		{
+			mat4 matrix;
+
+			matrix.m4[0][0] = 1.0f;
+			matrix.m4[1][1] = 1.0f;
+			matrix.m4[2][2] = 1.0f;
+			matrix.m4[3][3] = 1.0f;
+
+			return matrix;
+		}
+		mat4 Matirx_Translation(float x, float y, float z)
+		{
+			mat4 matrix;
+			matrix.m4[0][0] = 1.0f;
+			matrix.m4[1][1] = 1.0f;
+			matrix.m4[2][2] = 1.0f;
+			matrix.m4[3][3] = 1.0f;
+			matrix.m4[3][0] = x;
+			matrix.m4[3][1] = y;
+			matrix.m4[3][2] = z;
+			return matrix;
 		}
 		//Multiply a vector by a matrix
-		void MulitiplyMatrixVector(vec3 &i, vec3 &o, mat4 &m)
+		vec3 MulitiplyMatrixVector(vec3 &i, mat4 &m)
 		{
-			o.x = i.x * m.m4[0][0] + i.y * m.m4[1][0] + i.z * m.m4[2][0] + m.m4[3][0];
-			o.y = i.x * m.m4[0][1] + i.y * m.m4[1][1] + i.z * m.m4[2][1] + m.m4[3][1];
-			o.z = i.x * m.m4[0][2] + i.y * m.m4[1][2] + i.z * m.m4[2][2] + m.m4[3][2];
-			float w = i.x * m.m4[0][3] + i.y * m.m4[1][3] + i.z * m.m4[2][3] + m.m4[3][3];
+			vec3 v;
+			v.x = i.x * m.m4[0][0] + i.y * m.m4[1][0] + i.z * m.m4[2][0] + i.w * m.m4[3][0];
+			v.y = i.x * m.m4[0][1] + i.y * m.m4[1][1] + i.z * m.m4[2][1] + i.w * m.m4[3][1];
+			v.z = i.x * m.m4[0][2] + i.y * m.m4[1][2] + i.z * m.m4[2][2] + i.w * m.m4[3][2];
+			v.w = i.x * m.m4[0][3] + i.y * m.m4[1][3] + i.z * m.m4[2][3] + i.w * m.m4[3][3];
 
-			if (w != 0.0f)
-			{
-				o.x /= w; o.y /= w; o.z /= w;
-			}
-		};
-		//matrix multiplication
-		mat4 operator *(const mat4 &rhs)
-		{
-				this->m4[0][0] = m4[0][0] * rhs.m4[0][0] + m4[1][0] * rhs.m4[0][1] + m4[2][0] * rhs.m4[0][2] + m4[3][0] * rhs.m4[0][3];
-				this->m4[1][0] = m4[0][0] * rhs.m4[1][0] + m4[1][0] * rhs.m4[1][1] + m4[2][0] * rhs.m4[1][2] + m4[3][0] * rhs.m4[1][3];
-				this->m4[2][0] = m4[0][0] * rhs.m4[2][0] + m4[1][0] * rhs.m4[2][1] + m4[2][0] * rhs.m4[2][2] + m4[3][0] * rhs.m4[2][3];
-				this->m4[3][0] = m4[0][0] * rhs.m4[3][0] + m4[1][0] * rhs.m4[3][1] + m4[2][0] * rhs.m4[3][2] + m4[3][0] * rhs.m4[3][3];
-
-				this->m4[0][1] = m4[0][1] * rhs.m4[0][0] + m4[1][1] * rhs.m4[0][1] + m4[2][1] * rhs.m4[0][2] + m4[3][1] * rhs.m4[0][3];
-				this->m4[1][1] = m4[0][1] * rhs.m4[1][0] + m4[1][1] * rhs.m4[1][1] + m4[2][1] * rhs.m4[1][2] + m4[3][1] * rhs.m4[1][3];
-				this->m4[2][1] = m4[0][1] * rhs.m4[2][0] + m4[1][1] * rhs.m4[2][1] + m4[2][1] * rhs.m4[2][2] + m4[3][1] * rhs.m4[2][3];
-				this->m4[3][1] = m4[0][1] * rhs.m4[3][0] + m4[1][1] * rhs.m4[3][1] + m4[2][1] * rhs.m4[3][2] + m4[3][1] * rhs.m4[3][3];
-
-				this->m4[0][2] = m4[0][2] * rhs.m4[0][0] + m4[1][2] * rhs.m4[0][1] + m4[2][2] * rhs.m4[0][2] + m4[3][2] * rhs.m4[0][3];
-				this->m4[1][2] = m4[0][2] * rhs.m4[1][0] + m4[1][2] * rhs.m4[1][1] + m4[2][2] * rhs.m4[1][2] + m4[3][2] * rhs.m4[1][3];
-				this->m4[2][2] = m4[0][2] * rhs.m4[2][0] + m4[1][2] * rhs.m4[2][1] + m4[2][2] * rhs.m4[2][2] + m4[3][2] * rhs.m4[2][3];
-				this->m4[3][2] = m4[0][2] * rhs.m4[3][0] + m4[1][2] * rhs.m4[3][1] + m4[2][2] * rhs.m4[3][2] + m4[3][2] * rhs.m4[3][3];
-
-				this->m4[0][3] = m4[0][3] * rhs.m4[0][0] + m4[1][3] * rhs.m4[0][1] + m4[2][3] * rhs.m4[0][2] + m4[3][3] * rhs.m4[0][3];
-				this->m4[1][3] = m4[0][3] * rhs.m4[1][0] + m4[1][3] * rhs.m4[1][1] + m4[2][3] * rhs.m4[1][2] + m4[3][3] * rhs.m4[1][3];
-				this->m4[2][3] = m4[0][3] * rhs.m4[2][0] + m4[1][3] * rhs.m4[2][1] + m4[2][3] * rhs.m4[2][2] + m4[3][3] * rhs.m4[2][3];
-				this->m4[3][3] = m4[0][3] * rhs.m4[3][0] + m4[1][3] * rhs.m4[3][1] + m4[2][3] * rhs.m4[3][2] + m4[3][3] * rhs.m4[3][3];
-
-				return *this;
+			return v;
 		}
 	};
-
-}
+};
 
 
 

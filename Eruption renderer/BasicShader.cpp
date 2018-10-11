@@ -12,26 +12,29 @@ BasicShader::~BasicShader()
 }
 EruptionMath::vec3 BasicShader::VertexShader(EruptionMath::vec3 vec3)
 {
-	EruptionMath::vec3 RotateX, RotateZ, Translated, Projected;
+	EruptionMath::vec3 transformed, projected;
+	EruptionMath::mat4 matTans, matWorld;
 
-	z = z.RotateZ(time); x = x.RotateX(time);
+	matTans = matTans.Matirx_Translation(0, 0, 12.0f);
+	z = z.RotateZ(time * 0.5f); 
+	x = x.RotateX(time);
 
-	//Rotate in Z-Axis
-	z.MulitiplyMatrixVector(vec3, RotateZ, z);
-	// Rotate in X-Axis
-	x.MulitiplyMatrixVector(RotateZ, RotateX, x);
+	//Matrix multiplication
+	matWorld = matWorld.Identity();
+    matWorld = matWorld.Matrix_MultiplyMatrix(z, x);
+	matWorld = matWorld.Matrix_MultiplyMatrix(matWorld, matTans);
 
-	Translated = RotateX;
-	Translated.z += 5.0f;
-
-	projectionMatirx.MulitiplyMatrixVector(Translated, Projected, projectionMatirx);
+	transformed = matWorld.MulitiplyMatrixVector(vec3, matWorld);
+	projected = matWorld.MulitiplyMatrixVector(transformed, projectionMatirx);
 	
-	Projected.x += 1; Projected.y += 1;
-	
-	Projected.x *= pos.x;
-	Projected.y *= pos.y;
+	projected = projected / projected.w;
 
-	return Projected;
+	projected.x += 1; projected.y += 1;
+	
+	projected.x *= pos.x;
+	projected.y *= pos.y;
+
+	return projected;
 }
 EruptionMath::Color BasicShader::FragmentShader(EruptionMath::Color color)
 {

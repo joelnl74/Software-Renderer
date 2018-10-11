@@ -5,8 +5,9 @@
 #include "Rasterizer.h"
 #include "Mesh.h"
 #include "BasicShader.h"
-static float screenHeight = 600;
-static float screenWidth = 800;
+
+#define screenHeight 600;
+#define screenWidth 800;
 
 static bool g_Running = true;
 
@@ -48,22 +49,16 @@ int main(int argc, char* argv[])
 	Rasterizer *rasterizer = new Rasterizer(screen);
 
 	//Create a projection matrix 
-	EruptionMath::mat4 projectionMatirx = projectionMatirx.ProjectionMatirx(0.1f, 1000.0f, 90.0f, screenWidth, screenHeight);
-	Mesh cube(EruptionMath::vec3(400.0f, 300.0f, 0.0f), "Resources/OBJ/Test.obj" );
-	Mesh cube1(EruptionMath::vec3(200.0f, 150.0f, 0.0f),"Resources/OBJ/Cube.obj"  );
+	EruptionMath::mat4 projectionMatirx = projectionMatirx.ProjectionMatirx(0.1f, 1000.0f, 90.0f, 800, 600);
+	Mesh cube(EruptionMath::vec3(400.0f, 300.0f, 0.0f), "Resources/OBJ/teapot.obj" );
+	//Mesh cube1(EruptionMath::vec3(200.0f, 150.0f, 0.0f),"Resources/OBJ/Cube.obj"  );
 
 	BasicShader *basic = new BasicShader(projectionMatirx);
 
-	EruptionMath::Color color(255 ,255, 0);
+	EruptionMath::Color color(255 ,255, 255);
 	//red pixel
 	EruptionMath::Color color2(0, 0, 255);
 
-	EruptionMath::vec3 vertex1(0, 499, 0);
-	EruptionMath::vec3 vertex2(screenWidth / 2, 0, 0);
-	EruptionMath::vec3 vertex3(799, 499, 0);
-
-
-	EruptionMath::Triangle tri(vertex1, vertex2, vertex3);
 	while (g_Running)
 	{
 		old_time = current_time;
@@ -76,9 +71,8 @@ int main(int argc, char* argv[])
 
 			SDL_FillRect(screen, 0, 0);
 			//render here
-			rasterizer->DrawTriangle(tri, color2.toRGB());
 			cube.Draw(*rasterizer, color, projectionMatirx,ftime, basic);
-			cube1.Draw(*rasterizer, color, projectionMatirx, ftime, basic);
+			//cube1.Draw(*rasterizer, color, projectionMatirx, ftime, basic);
 
 			SDL_UpdateWindowSurface(window->window);
 	}
