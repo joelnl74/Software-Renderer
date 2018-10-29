@@ -1,9 +1,10 @@
 #include "BasicShader.h"
+#include "Math.h"
 
-
-BasicShader::BasicShader(EruptionMath::mat4 projectionMatrixx)
+BasicShader::BasicShader()
 {
-	projectionMatirx = projectionMatrixx;
+	//Create a projection matrix
+	projectionMatirx =  projectionMatirx.ProjectionMatirx(0.1f, 1000.0f, 90.0f, 800, 600);;
 }
 
 
@@ -29,9 +30,9 @@ EruptionMath::vec3 BasicShader::VertexShader(EruptionMath::vec3 vec3)
 	projected = matWorld.MulitiplyMatrixVector(transformed, projectionMatirx);
 	
 	projected = projected / projected.w;
-
+	//set into screen space
 	projected.x += 1; projected.y += 1;
-	
+	//change position of the object
 	projected.x *= pos.x;
 	projected.y *= pos.y;
 

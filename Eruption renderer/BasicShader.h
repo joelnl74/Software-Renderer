@@ -1,9 +1,9 @@
 #pragma once
 #include "Shader.h"
-class BasicShader : Shader
+class BasicShader : public Shader
 {
 public:
-	BasicShader(EruptionMath::mat4 projectionMatrix);
+	BasicShader();
 	~BasicShader();
 	 EruptionMath::vec3 VertexShader(EruptionMath::vec3 vec3);
 	 EruptionMath::Color FragmentShader(EruptionMath::Color color);

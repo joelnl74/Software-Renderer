@@ -1,18 +1,17 @@
 #include "Mesh.h"
 #include <algorithm>
-#include <future>
-#include <thread>
+
 Mesh::Mesh(EruptionMath::vec3 vposition, std::string filename)
 {
 	position = vposition;
-
+	shader = new BasicShader();
 	ObjParser parser;
 	verticies = parser.LoadObj(filename);
 }
 Mesh::~Mesh()
 {
 }
-void Mesh::Draw(Rasterizer &raterizer, EruptionMath::Color color, EruptionMath::mat4 projectionMatrix, float time, BasicShader *shader)
+void Mesh::Draw(Rasterizer &raterizer, EruptionMath::Color color, float time)
 {
 	fTheta += 1.0f * time;
 
@@ -21,11 +20,14 @@ void Mesh::Draw(Rasterizer &raterizer, EruptionMath::Color color, EruptionMath::
 	std::vector<EruptionMath::Triangle> toDraw;
 	for (auto tri : verticies)
 	{
+		
 		EruptionMath::Triangle vertexShader(EruptionMath::vec3(0, 0, 0), EruptionMath::vec3(0, 0, 0), EruptionMath::vec3(0, 0, 0));
-
-		shader->SetTime(fTheta);
-		shader->SetPosition(position);
-
+		
+		if (shader != 0)
+		{
+			shader->SetTime(fTheta);
+			shader->SetPosition(position);
+		}
 		vertexShader.p[0] = shader->VertexShader(tri.p[0]);
 		vertexShader.p[1] = shader->VertexShader(tri.p[1]);
 		vertexShader.p[2] = shader->VertexShader(tri.p[2]);
